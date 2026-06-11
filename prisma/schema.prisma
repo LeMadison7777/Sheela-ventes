@@ -1,0 +1,94 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  password  String
+  phone     String?
+  avatar    String?
+  role      String   @default("vendor")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  groups  SaleGroup[]
+  orders  Order[]
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  icon        String
+  color       String
+  createdAt   DateTime @default(now())
+
+  products Product[]
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  price       Float
+  imageUrl    String
+  images      String   @default("[]")
+  sizes       String   @default("[]")
+  colors      String   @default("[]")
+  stock       Int      @default(100)
+  featured    Boolean  @default(false)
+  categoryId  String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  category Category @relation(fields: [categoryId], references: [id])
+  orders   Order[]
+}
+
+model SaleGroup {
+  id           String   @id @default(cuid())
+  title        String
+  description  String?
+  coverImage   String?
+  minMembers   Int      @default(5)
+  maxMembers   Int      @default(50)
+  currentCount Int      @default(0)
+  discount     Float    @default(0)
+  deadline     DateTime
+  status       String   @default("open")
+  vendorId     String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  vendor User    @relation(fields: [vendorId], references: [id])
+  orders Order[]
+}
+
+model Order {
+  id        String   @id @default(cuid())
+  quantity  Int      @default(1)
+  size      String?
+  color     String?
+  status    String   @default("pending")
+  buyerName String
+  buyerPhone String
+  buyerEmail String?
+  notes     String?
+  productId String
+  groupId   String
+  userId    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  product Product   @relation(fields: [productId], references: [id])
+  group   SaleGroup @relation(fields: [groupId], references: [id])
+  user    User?     @relation(fields: [userId], references: [id])
+}
