@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Sheela — Ventes groupées mode & beauté
 
-## Getting Started
+Plateforme complète pour les créatrices qui organisent des **ventes groupées** (vêtements, accessoires, parfums, chaussures, ongles).
 
-First, run the development server:
+## Fonctionnalités
+
+- **Landing page** avec scène 3D (Three.js / React Three Fiber) et animations Framer Motion
+- **Catalogue** filtrable par catégorie et recherche
+- **Groupes de vente** — création, suivi des membres, barre de progression
+- **Commandes groupées** — formulaire de participation avec tailles/couleurs
+- **Dashboard vendeuse** — stats, groupes récents, commandes
+- **Authentification** — inscription / connexion avec sessions sécurisées
+- **API REST** complète (Next.js App Router + Prisma + SQLite)
+
+## Démarrage rapide
 
 ```bash
+cd sheela-ventes
+npm install
+npm run db:setup    # migration + données demo
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Ouvrir [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Compte démo
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Email :** `demo@sheela.fr`
+- **Mot de passe :** `demo123`
 
-## Learn More
+## Stack technique
 
-To learn more about Next.js, take a look at the following resources:
+| Couche | Technologie |
+|--------|-------------|
+| Frontend | Next.js 16, React 19, Tailwind CSS 4 |
+| Animations | Framer Motion |
+| 3D | Three.js, @react-three/fiber, @react-three/drei |
+| Backend | Next.js API Routes |
+| Base de données | SQLite + Prisma 7 |
+| Auth | bcryptjs + cookies httpOnly |
+| Validation | Zod |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Pages
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Route | Description |
+|-------|-------------|
+| `/` | Accueil avec hero 3D |
+| `/catalogue` | Catalogue produits |
+| `/groupes` | Liste des groupes actifs |
+| `/groupes/[id]` | Détail + rejoindre un groupe |
+| `/groupes/creer` | Créer un nouveau groupe |
+| `/dashboard` | Espace vendeuse |
+| `/connexion` | Connexion |
+| `/inscription` | Inscription |
 
-## Deploy on Vercel
+## Scripts
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm run dev        # Serveur de développement
+npm run build      # Build production
+npm run db:migrate # Appliquer migrations
+npm run db:seed    # Recharger les données demo
+```

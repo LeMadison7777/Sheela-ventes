@@ -33,7 +33,7 @@ export default function Footer() {
             <h4 className="text-sm font-semibold text-white mb-4">Contact</h4>
             <ul className="space-y-2 text-sm text-zinc-500">
               <li className="flex items-center gap-2">
-                <Camera className="h-4 w-4" /> @sheela.ventes
+                <Camera className="h-4 w-4" /> ngoyiexauceroro@gmail.com
               </li>
               <li className="flex items-center gap-2">
                 <MessageCircle className="h-4 w-4" /> WhatsApp Business
