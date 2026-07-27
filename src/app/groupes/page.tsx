@@ -2,6 +2,9 @@ import { prisma } from "@/lib/prisma";
 import { FadeIn, GradientText } from "@/components/ui/motion";
 import GroupCard from "@/components/cards/GroupCard";
 
+// ⬇️ Ajoute cette ligne magique ici pour forcer le rechargement en direct
+export const dynamic = "force-dynamic";
+
 export default async function GroupesPage() {
   const groups = await prisma.saleGroup.findMany({
     include: {
@@ -12,6 +15,8 @@ export default async function GroupesPage() {
   });
 
   const enriched = groups.map((g) => ({ ...g, currentCount: g._count.orders }));
+  
+  // Reste du code...
 
   return (
     <div className="min-h-screen pt-28 pb-20 px-6">
