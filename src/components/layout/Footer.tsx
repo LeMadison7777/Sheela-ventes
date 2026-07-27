@@ -36,7 +36,7 @@ export default function Footer() {
                 <Camera className="h-4 w-4" /> ngoyiexauceroro@gmail.com
               </li>
               <li className="flex items-center gap-2">
-                <MessageCircle className="h-4 w-4" /> WhatsApp Business
+                <MessageCircle className="h-4 w-4" />  <Link href="https://wa.me/242066099427" className="hover:text-pink-400 transition-colors">WhatsApp Business</Link>
               </li>
             </ul>
           </div>
