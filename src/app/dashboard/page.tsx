@@ -11,11 +11,13 @@ import {
   TrendingUp,
   Plus,
   ArrowRight,
+  ShieldAlert
 } from "lucide-react";
 import { FadeIn, GradientText, GlassCard, Badge } from "@/components/ui/motion";
 import { formatDate } from "@/lib/utils";
 
 type DashboardData = {
+  userRole?: string; // ⬅️ Ajout du rôle de l'utilisateur ici
   stats: { groups: number; orders: number; products: number; categories: number };
   recentGroups: Array<{
     id: string;
@@ -89,6 +91,29 @@ export default function DashboardPage() {
             Nouveau groupe
           </Link>
         </FadeIn>
+
+        {/* ⚡ SECTION SUPER ADMIN ⚡ */}
+        {data.userRole === "ADMIN" && (
+          <FadeIn delay={0.05}>
+            <GlassCard className="p-6 mb-10 border-purple-500/50 bg-purple-900/10" hover={false}>
+              <div className="flex items-center gap-2 mb-3">
+                <ShieldAlert className="h-6 w-6 text-purple-400" />
+                <h2 className="text-xl font-bold text-purple-400">Espace Super Admin</h2>
+              </div>
+              <p className="text-zinc-400 text-sm mb-5">
+                Vous avez les droits d'administration sur l'ensemble de la plateforme.
+              </p>
+              <div className="flex flex-wrap gap-4">
+                <button className="px-5 py-2.5 bg-purple-600 hover:bg-purple-500 rounded-lg text-white text-sm font-medium transition-colors">
+                  Gérer tous les utilisateurs
+                </button>
+                <button className="px-5 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-white text-sm font-medium transition-colors">
+                  Modérer les groupes
+                </button>
+              </div>
+            </GlassCard>
+          </FadeIn>
+        )}
 
         {/* Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">

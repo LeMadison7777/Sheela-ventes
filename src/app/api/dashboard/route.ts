@@ -8,6 +8,11 @@ export async function GET() {
     return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
   }
 
+  // 1. On récupère ton profil depuis la base de données pour avoir ton statut ADMIN en direct
+  const dbUser = await prisma.user.findUnique({
+    where: { id: user.id },
+  });
+
   const [groups, orders, products, categories] = await Promise.all([
     prisma.saleGroup.count({ where: { vendorId: user.id } }),
     prisma.order.count({
@@ -35,6 +40,7 @@ export async function GET() {
   });
 
   return NextResponse.json({
+    userRole: dbUser?.role, // ⬇️ 2. La pièce manquante : on envoie le rôle au Dashboard
     stats: { groups, orders, products, categories },
     recentGroups: recentGroups.map((g) => ({
       ...g,
