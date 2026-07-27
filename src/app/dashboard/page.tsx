@@ -104,12 +104,12 @@ export default function DashboardPage() {
                 Vous avez les droits d'administration sur l'ensemble de la plateforme.
               </p>
               <div className="flex flex-wrap gap-4">
-                <button className="px-5 py-2.5 bg-purple-600 hover:bg-purple-500 rounded-lg text-white text-sm font-medium transition-colors">
+                 <Link href="/admin/users" className="px-5 py-2.5 bg-purple-600 hover:bg-purple-500 rounded-lg text-white text-sm font-medium transition-colors inline-block">
                   Gérer tous les utilisateurs
-                </button>
-                <button className="px-5 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-white text-sm font-medium transition-colors">
-                  Modérer les groupes
-                </button>
+                 </Link>
+                 <Link href="/admin/groups" className="px-5 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-white text-sm font-medium transition-colors inline-block">
+                   Modérer les groupes
+                 </Link>
               </div>
             </GlassCard>
           </FadeIn>
