@@ -19,6 +19,9 @@ export const metadata: Metadata = {
   description:
     "Plateforme pour créatrices de ventes groupées : vêtements, accessoires, parfums, chaussures, ongles. Organisez vos commandes Shein-style facilement.",
   keywords: ["ventes groupées", "shein", "mode", "beauté", "commandes groupées"],
+  verification: {
+    google: "VDo9p9lO_voD9Kw_B2QqHO5_rjbO1cno5--WGxBSWWo",
+  },
 };
 
 export default function RootLayout({
