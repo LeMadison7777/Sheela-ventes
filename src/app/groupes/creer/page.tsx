@@ -3,8 +3,9 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { ArrowLeft, Loader2, X } from "lucide-react";
 import { FadeIn, GradientText, Button, GlassCard } from "@/components/ui/motion";
+import UploadButton from "@/components/UploadButton";
 
 type Product = { id: string; name: string; price: number; category: { name: string } };
 
@@ -14,6 +15,9 @@ export default function CreerGroupePage() {
   const [error, setError] = useState("");
   const [userId, setUserId] = useState<string | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
+  
+  // État pour mémoriser l'URL de l'image téléchargée
+  const [coverImageUrl, setCoverImageUrl] = useState<string>("");
 
   useEffect(() => {
     fetch("/api/auth/me")
@@ -42,7 +46,7 @@ export default function CreerGroupePage() {
         body: JSON.stringify({
           title: form.get("title"),
           description: form.get("description"),
-          coverImage: form.get("coverImage") || undefined,
+          coverImage: coverImageUrl || undefined,
           minMembers: Number(form.get("minMembers")),
           maxMembers: Number(form.get("maxMembers")),
           discount: Number(form.get("discount")),
@@ -103,13 +107,29 @@ export default function CreerGroupePage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-zinc-300 mb-2">Image de couverture (URL)</label>
-                <input
-                  name="coverImage"
-                  type="url"
-                  placeholder="https://..."
-                  className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:border-pink-500/50"
-                />
+                <label className="block text-sm font-medium text-zinc-300 mb-2">Image de couverture</label>
+                {coverImageUrl ? (
+                  <div className="relative w-full h-48 rounded-xl overflow-hidden border border-white/10">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img 
+                      src={coverImageUrl} 
+                      alt="Couverture" 
+                      className="w-full h-full object-cover"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setCoverImageUrl("")}
+                      className="absolute top-2 right-2 p-2 bg-black/50 hover:bg-black/70 rounded-full text-white transition-colors cursor-pointer"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <UploadButton 
+                    onUploadSuccess={(url) => setCoverImageUrl(url)} 
+                    label="Ajouter une photo depuis le téléphone"
+                  />
+                )}
               </div>
 
               <div className="grid grid-cols-2 gap-4">

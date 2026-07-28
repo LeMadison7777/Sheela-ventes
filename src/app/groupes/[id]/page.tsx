@@ -37,14 +37,19 @@ export default async function GroupDetailPage({ params }: Params) {
     take: 20,
   });
 
+  // Sécurité pour l'image de couverture (gère le cas où group.coverImage est vide ou null)
+  const coverSrc = group.coverImage && group.coverImage.trim() !== ""
+    ? group.coverImage
+    : "https://images.unsplash.com/photo-1483985988355-763728e9fb55?w=1200&q=80";
+
   return (
     <div className="min-h-screen pt-28 pb-20 px-6">
       <div className="mx-auto max-w-5xl">
         {/* Header */}
         <FadeIn>
-          <div className="relative h-64 md:h-80 rounded-3xl overflow-hidden mb-8">
+          <div className="relative h-64 md:h-80 rounded-3xl overflow-hidden mb-8 border border-white/10">
             <Image
-              src={group.coverImage ?? "https://images.unsplash.com/photo-1483985988355-763728e9fb55?w=1200&q=80"}
+              src={coverSrc}
               alt={group.title}
               fill
               className="object-cover"
@@ -109,12 +114,12 @@ export default async function GroupDetailPage({ params }: Params) {
             </GlassCard>
 
             {group.status === "open" && (
-            <JoinGroupForm 
+              <JoinGroupForm 
                 groupId={group.id} 
                 products={products} 
                 discount={group.discount} 
-              vendor={{ name: group.vendor.name, phone: group.vendor.phone ?? "" }} 
-             />
+                vendor={{ name: group.vendor.name, phone: group.vendor.phone ?? "" }} 
+              />
             )}
           </FadeIn>
 
@@ -154,7 +159,7 @@ export default async function GroupDetailPage({ params }: Params) {
                           <div className="mt-1">
                             <Badge variant={order.status === "confirmed" ? "success" : "default"}>
                                {order.status === "confirmed" ? "Confirmé" : "En attente"}
-                             </Badge>
+                            </Badge>
                           </div>
                           {order.size && (
                             <p className="text-xs text-zinc-600 mt-1">Taille {order.size}</p>

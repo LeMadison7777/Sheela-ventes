@@ -39,7 +39,7 @@ model Product {
   name        String
   description String?
   price       Float
-  imageUrl    String
+  imageUrl    String   // On le garde pour la miniature principale
   images      String   @default("[]")
   sizes       String   @default("[]")
   colors      String   @default("[]")
@@ -51,13 +51,30 @@ model Product {
 
   category Category @relation(fields: [categoryId], references: [id])
   orders   Order[]
+
+  // NOUVEAU : Liaison optionnelle au groupe pour les catalogues exclusifs
+  groupId  String?
+  group    SaleGroup? @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  // NOUVEAU : Liaison vers la table des médias (Vidéos et Images)
+  media    ProductMedia[]
+}
+
+// NOUVEAU MODÈLE : Pour stocker les images et vidéos uploadées
+model ProductMedia {
+  id        String   @id @default(cuid())
+  url       String   // L'URL du fichier uploadé (ex: Cloudinary)
+  type      String   @default("IMAGE") // Peut être "IMAGE" ou "VIDEO"
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
 }
 
 model SaleGroup {
   id           String   @id @default(cuid())
   title        String
   description  String?
-  coverImage   String?
+  coverImage   String?  // On va insérer l'URL de l'image uploadée ici
   minMembers   Int      @default(5)
   maxMembers   Int      @default(50)
   currentCount Int      @default(0)
@@ -70,23 +87,26 @@ model SaleGroup {
 
   vendor User    @relation(fields: [vendorId], references: [id])
   orders Order[]
+  
+  // NOUVEAU : Le groupe possède maintenant son propre catalogue de produits
+  products Product[]
 }
 
 model Order {
-  id        String   @id @default(cuid())
-  quantity  Int      @default(1)
-  size      String?
-  color     String?
-  status    String   @default("pending")
-  buyerName String
+  id         String   @id @default(cuid())
+  quantity   Int      @default(1)
+  size       String?
+  color      String?
+  status     String   @default("pending")
+  buyerName  String
   buyerPhone String
   buyerEmail String?
-  notes     String?
-  productId String
-  groupId   String
-  userId    String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  notes      String?
+  productId  String
+  groupId    String
+  userId     String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   product Product   @relation(fields: [productId], references: [id])
   group   SaleGroup @relation(fields: [groupId], references: [id])
