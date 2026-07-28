@@ -76,7 +76,7 @@ async function main() {
       data: {
         name: "Robe satinée fleurie",
         description: "Robe midi élégante, coupe fluide, parfaite pour l'été",
-        price: 18.99,
+        price: 8000,
         imageUrl: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600&q=80",
         sizes: JSON.stringify(["XS", "S", "M", "L", "XL"]),
         colors: JSON.stringify(["Rose", "Blanc", "Noir"]),
@@ -88,7 +88,7 @@ async function main() {
       data: {
         name: "Ensemble crop top + jupe",
         description: "Set coordonné tendance, tissu stretch confortable",
-        price: 22.5,
+        price: 7500,
         imageUrl: "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=600&q=80",
         sizes: JSON.stringify(["S", "M", "L"]),
         colors: JSON.stringify(["Beige", "Kaki", "Noir"]),
@@ -100,7 +100,7 @@ async function main() {
       data: {
         name: "Sac bandoulière chaîne dorée",
         description: "Mini sac structuré, finitions premium",
-        price: 14.99,
+        price: 12000,
         imageUrl: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=600&q=80",
         colors: JSON.stringify(["Noir", "Blanc", "Camel"]),
         featured: true,
@@ -111,7 +111,7 @@ async function main() {
       data: {
         name: "Boucles d'oreilles perles",
         description: "Bijoux délicats, finition dorée",
-        price: 6.99,
+        price: 6000,
         imageUrl: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=600&q=80",
         colors: JSON.stringify(["Or", "Argent"]),
         categoryId: accessoires.id,
@@ -121,7 +121,7 @@ async function main() {
       data: {
         name: "Eau de parfum Vanille Gourmande",
         description: "Notes vanille, caramel et musc blanc — 50ml",
-        price: 12.99,
+        price: 3500,
         imageUrl: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=600&q=80",
         featured: true,
         categoryId: parfums.id,
@@ -131,7 +131,7 @@ async function main() {
       data: {
         name: "Sneakers plateforme blanches",
         description: "Semelle épaisse 4cm, confort toute la journée",
-        price: 28.99,
+        price: 28000,
         imageUrl: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=600&q=80",
         sizes: JSON.stringify(["36", "37", "38", "39", "40", "41"]),
         colors: JSON.stringify(["Blanc", "Noir/Rose"]),
@@ -143,7 +143,7 @@ async function main() {
       data: {
         name: "Kit ongles press-on French",
         description: "24 capsules, colle incluse, finition salon",
-        price: 8.99,
+        price: 10000,
         imageUrl: "https://images.unsplash.com/photo-1604654896290-d063af5b9ebd?w=600&q=80",
         colors: JSON.stringify(["French", "Nude", "Bordeaux"]),
         featured: true,
@@ -154,7 +154,7 @@ async function main() {
       data: {
         name: "Mules talons carrés",
         description: "Talons 7cm, style minimal chic",
-        price: 19.99,
+        price: 11000,
         imageUrl: "https://images.unsplash.com/photo-1560769629-975ec94e6a86?w=600&q=80",
         sizes: JSON.stringify(["36", "37", "38", "39", "40"]),
         colors: JSON.stringify(["Noir", "Nude", "Rouge"]),
@@ -177,7 +177,7 @@ async function main() {
       data: {
         title: "Drop Robes Été ☀️",
         description: "Commande groupée robes & ensembles — livraison sous 3 semaines",
-        coverImage: "https://images.unsplash.com/photo-1496747611176-843222e1ad05?w=800&q=80",
+        coverImage: "https://i.pinimg.com/1200x/56/a5/77/56a57771227133ce5e1ff4c22b3ca830.jpg",
         minMembers: 5,
         maxMembers: 30,
         discount: 15,

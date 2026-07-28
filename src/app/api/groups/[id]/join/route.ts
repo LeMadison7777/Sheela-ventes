@@ -9,6 +9,14 @@ export async function POST(request: NextRequest, { params }: Params) {
   try {
     const body = await request.json();
 
+    // --- SÉCURITÉ ANTI-SPAM (Honeypot) ---
+    // Si le champ caché "botField" a été rempli, c'est un bot automatisé.
+    // On simule un succès pour ne pas éveiller ses soupçons, mais on bloque l'écriture en base.
+    if (body.botField) {
+      return NextResponse.json({ success: true }, { status: 200 });
+    }
+    // -------------------------------------
+
     const group = await prisma.saleGroup.findUnique({
       where: { id: groupId },
       include: { _count: { select: { orders: true } } },

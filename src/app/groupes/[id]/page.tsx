@@ -3,9 +3,10 @@ import { notFound } from "next/navigation";
 import { Users, Calendar, Percent, User } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { FadeIn, GradientText, GlassCard, Badge } from "@/components/ui/motion";
-import { formatDate, daysLeft } from "@/lib/utils";
+import { formatDate, daysLeft, formatPrice } from "@/lib/utils";
 import { GROUP_STATUS } from "@/lib/constants";
 import JoinGroupForm from "@/components/groups/JoinGroupForm";
+import ShareGroupButton from "@/components/groups/ShareGroupButton";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -100,10 +101,20 @@ export default async function GroupDetailPage({ params }: Params) {
                   Min. {group.minMembers} personnes pour valider la commande
                 </p>
               </div>
+
+              {/* Bouton de partage WhatsApp intégré ici */}
+              <div className="mt-6">
+                <ShareGroupButton groupTitle={group.title} />
+              </div>
             </GlassCard>
 
             {group.status === "open" && (
-              <JoinGroupForm groupId={group.id} products={products} discount={group.discount} />
+            <JoinGroupForm 
+                groupId={group.id} 
+                products={products} 
+                discount={group.discount} 
+              vendor={{ name: group.vendor.name, phone: group.vendor.phone ?? "" }} 
+             />
             )}
           </FadeIn>
 
@@ -119,33 +130,39 @@ export default async function GroupDetailPage({ params }: Params) {
                 </p>
               ) : (
                 <div className="space-y-3">
-                  {group.orders.map((order) => (
-                    <div
-                      key={order.id}
-                      className="flex items-center gap-4 rounded-xl border border-white/5 bg-white/5 p-4"
-                    >
-                      <div className="relative h-12 w-12 rounded-lg overflow-hidden shrink-0">
-                        <Image
-                          src={order.product.imageUrl}
-                          alt={order.product.name}
-                          fill
-                          className="object-cover"
-                        />
+                  {group.orders.map((order) => {
+                    const itemPrice = order.product.price * (1 - group.discount / 100);
+                    return (
+                      <div
+                        key={order.id}
+                        className="flex items-center gap-4 rounded-xl border border-white/5 bg-white/5 p-4"
+                      >
+                        <div className="relative h-12 w-12 rounded-lg overflow-hidden shrink-0">
+                          <Image
+                            src={order.product.imageUrl}
+                            alt={order.product.name}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-white truncate">{order.buyerName}</p>
+                          <p className="text-xs text-zinc-500 truncate">{order.product.name}</p>
+                        </div>
+                        <div className="text-right shrink-0">
+                          <p className="text-sm font-bold text-pink-400">{formatPrice(itemPrice)}</p>
+                          <div className="mt-1">
+                            <Badge variant={order.status === "confirmed" ? "success" : "default"}>
+                               {order.status === "confirmed" ? "Confirmé" : "En attente"}
+                             </Badge>
+                          </div>
+                          {order.size && (
+                            <p className="text-xs text-zinc-600 mt-1">Taille {order.size}</p>
+                          )}
+                        </div>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-white truncate">{order.buyerName}</p>
-                        <p className="text-xs text-zinc-500 truncate">{order.product.name}</p>
-                      </div>
-                      <div className="text-right shrink-0">
-                        <Badge variant={order.status === "confirmed" ? "success" : "default"}>
-                          {order.status === "confirmed" ? "Confirmé" : "En attente"}
-                        </Badge>
-                        {order.size && (
-                          <p className="text-xs text-zinc-600 mt-1">Taille {order.size}</p>
-                        )}
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </GlassCard>

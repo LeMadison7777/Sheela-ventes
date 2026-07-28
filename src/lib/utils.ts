@@ -5,11 +5,10 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatPrice(price: number) {
-  return new Intl.NumberFormat("fr-FR", {
-    style: "currency",
-    currency: "EUR",
-  }).format(price);
+export function formatPrice(price: number): string {
+  // Formande le nombre avec un espace pour les milliers (ex: 15000 -> 15 000)
+  const formattedNumber = new Intl.NumberFormat("fr-FR").format(price);
+  return `${formattedNumber} FCFA`;
 }
 
 export function formatDate(date: Date | string) {

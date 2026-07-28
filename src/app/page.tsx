@@ -61,7 +61,7 @@ export default async function HomePage() {
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-400 opacity-75" />
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-pink-500" />
                 </span>
-                Plateforme #1 ventes groupées
+                Plateforme numéro 1 de ventes groupées
               </div>
             </FadeIn>
 

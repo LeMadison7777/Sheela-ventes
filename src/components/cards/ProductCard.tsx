@@ -55,7 +55,7 @@ export default function ProductCard({ product }: { product: Product }) {
             <p className="text-xs text-zinc-500 line-clamp-2 mb-3">{product.description}</p>
           )}
           <div className="flex items-center justify-between">
-            <span className="text-lg font-bold text-pink-400">{formatPrice(product.price)}</span>
+           <span className="font-bold text-white">{formatPrice(product.price)}</span>
             <span className="text-xs text-zinc-500">{product.category.name}</span>
           </div>
         </div>

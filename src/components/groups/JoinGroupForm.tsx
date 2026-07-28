@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Loader2, ShoppingBag } from "lucide-react";
 import { GlassCard, Button } from "@/components/ui/motion";
 import { formatPrice, parseJsonArray } from "@/lib/utils";
+import MobileMoneyInstructions from "@/components/groups/MobileMoneyInstructions";
 
 type Product = {
   id: string;
@@ -16,14 +17,21 @@ type Product = {
   category: { name: string };
 };
 
+type Vendor = {
+  name: string;
+  phone: string;
+};
+
 export default function JoinGroupForm({
   groupId,
   products,
   discount,
+  vendor,
 }: {
   groupId: string;
   products: Product[];
   discount: number;
+  vendor: Vendor;
 }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -55,6 +63,7 @@ export default function JoinGroupForm({
           color: form.get("color") || undefined,
           notes: form.get("notes") || undefined,
           quantity: 1,
+          botField: form.get("botField"), // --- SÉCURITÉ ANTI-SPAM : Envoi du piège ---
         }),
       });
 
@@ -78,6 +87,16 @@ export default function JoinGroupForm({
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
+        {/* --- SÉCURITÉ ANTI-SPAM : Champ piège invisible (Honeypot) --- */}
+        <div style={{ display: "none" }} aria-hidden="true">
+          <input
+            type="text"
+            name="botField"
+            tabIndex={-1}
+            autoComplete="off"
+          />
+        </div>
+
         <div>
           <label className="block text-xs font-medium text-zinc-400 mb-1.5">Article *</label>
           <select
@@ -159,6 +178,9 @@ export default function JoinGroupForm({
             className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:border-pink-500/50 resize-none"
           />
         </div>
+
+        {/* Encadré Mobile Money intégré */}
+        <MobileMoneyInstructions vendorName={vendor.name} vendorPhone={vendor.phone} />
 
         {error && <p className="text-xs text-red-400">{error}</p>}
 

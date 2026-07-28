@@ -17,7 +17,7 @@ import { FadeIn, GradientText, GlassCard, Badge } from "@/components/ui/motion";
 import { formatDate } from "@/lib/utils";
 
 type DashboardData = {
-  userRole?: string; // ⬅️ Ajout du rôle de l'utilisateur ici
+  userRole?: string;
   stats: { groups: number; orders: number; products: number; categories: number };
   recentGroups: Array<{
     id: string;
