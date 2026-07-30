@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2, ShoppingBag, CheckCircle2 } from "lucide-react";
+import { Loader2, ShoppingBag, CheckCircle2, Trash2 } from "lucide-react";
 import { GlassCard, Button } from "@/components/ui/motion";
 import { formatPrice, parseJsonArray } from "@/lib/utils";
 import MobileMoneyInstructions from "@/components/groups/MobileMoneyInstructions";
@@ -37,12 +37,22 @@ export default function JoinGroupForm({
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
+  const [orderId, setOrderId] = useState<string | null>(null);
   const [selectedProduct, setSelectedProduct] = useState(products[0]?.id ?? "");
 
   const product = products.find((p) => p.id === selectedProduct);
   const sizes = product ? parseJsonArray(product.sizes) : [];
   const colors = product ? parseJsonArray(product.colors) : [];
   const discountedPrice = product ? product.price * (1 - discount / 100) : 0;
+
+  // Au chargement, on vérifie si l'acheteuse a déjà commandé dans ce groupe
+  useEffect(() => {
+    const savedOrderId = localStorage.getItem(`order_${groupId}`);
+    if (savedOrderId) {
+      setOrderId(savedOrderId);
+      setSuccess(true);
+    }
+  }, [groupId]);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -65,18 +75,51 @@ export default function JoinGroupForm({
           color: form.get("color") || undefined,
           notes: form.get("notes") || undefined,
           quantity: 1,
-          botField: form.get("botField"), // Sécurité anti-spam
+          botField: form.get("botField"),
         }),
       });
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Erreur");
 
+      // On sauvegarde l'ID de la commande en mémoire locale
+      if (data.orderId) {
+        setOrderId(data.orderId);
+        localStorage.setItem(`order_${groupId}`, data.orderId);
+      }
+
       setSuccess(true);
       router.refresh();
       (e.target as HTMLFormElement).reset();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Erreur lors de la commande");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // Fonction pour annuler la commande
+  async function handleLeaveGroup() {
+    if (!orderId) return;
+    
+    // Petite confirmation pour éviter une erreur de clic
+    if (!window.confirm("Êtes-vous sûre de vouloir annuler votre commande et quitter ce groupe ?")) return;
+
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/orders/${orderId}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) throw new Error("Erreur lors de l'annulation");
+
+      // On nettoie l'interface et la mémoire locale
+      setSuccess(false);
+      setOrderId(null);
+      localStorage.removeItem(`order_${groupId}`);
+      router.refresh(); // Met à jour le compteur de la page
+    } catch (err) {
+      setError("Impossible d'annuler la commande.");
     } finally {
       setLoading(false);
     }
@@ -98,24 +141,36 @@ export default function JoinGroupForm({
           <p className="text-xs text-zinc-400">
             Pensez à effectuer le paiement Mobile Money selon les instructions ci-dessous pour valider votre participation.
           </p>
-          <button
-            type="button"
-            onClick={() => setSuccess(false)}
-            className="mt-4 text-xs text-pink-400 hover:underline cursor-pointer"
-          >
-            Faire une autre commande
-          </button>
+
+          <div className="pt-4 flex flex-col gap-3">
+            <button
+              type="button"
+              onClick={() => {
+                setSuccess(false);
+                setOrderId(null);
+                localStorage.removeItem(`order_${groupId}`);
+              }}
+              className="text-xs text-pink-400 hover:underline cursor-pointer"
+            >
+              Faire une autre commande
+            </button>
+            
+            {/* Nouveau bouton pour quitter le groupe */}
+            <button
+              type="button"
+              onClick={handleLeaveGroup}
+              disabled={loading}
+              className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-red-500/10 text-red-400 rounded-lg text-sm hover:bg-red-500/20 transition-colors disabled:opacity-50"
+            >
+              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+              Annuler ma commande
+            </button>
+          </div>
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Champ piège anti-spam (Honeypot) */}
           <div style={{ display: "none" }} aria-hidden="true">
-            <input
-              type="text"
-              name="botField"
-              tabIndex={-1}
-              autoComplete="off"
-            />
+            <input type="text" name="botField" tabIndex={-1} autoComplete="off" />
           </div>
 
           <div>
@@ -200,12 +255,11 @@ export default function JoinGroupForm({
             />
           </div>
 
-          {/* Encadré Mobile Money intégré */}
           <MobileMoneyInstructions vendorName={vendor.name} vendorPhone={vendor.phone} />
 
-          {error && <p className="text-xs text-red-400">{error}</p>}
+          {error && <p className="text-xs text-red-400 mt-2">{error}</p>}
 
-          <Button type="submit" disabled={loading || !selectedProduct} className="w-full">
+          <Button type="submit" disabled={loading || !selectedProduct} className="w-full mt-4">
             {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
             Commander
           </Button>

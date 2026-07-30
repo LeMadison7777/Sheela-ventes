@@ -74,57 +74,62 @@ async function main() {
   const products = await Promise.all([
     prisma.product.create({
       data: {
-        name: "Robe satinée fleurie",
-        description: "Robe midi élégante, coupe fluide, parfaite pour l'été",
+        name: "Dentelle satinée florale 3D - Rose clair",
+        description: " Dentelle résille brodée florale 3D avec paillettes",
         price: 8000,
-        imageUrl: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600&q=80",
+        imageUrl: "https://i.pinimg.com/1200x/ae/23/8d/ae238d3d0816bdf0f2e1f67366a6decb.jpg",
         sizes: JSON.stringify(["XS", "S", "M", "L", "XL"]),
         colors: JSON.stringify(["Rose", "Blanc", "Noir"]),
         featured: true,
         categoryId: vetements.id,
+        vendorId: vendor.id, // 👈 Ajouté ici
       },
     }),
     prisma.product.create({
       data: {
-        name: "Ensemble crop top + jupe",
-        description: "Set coordonné tendance, tissu stretch confortable",
+        name: "Ensemble crop top",
+        description: "Chic choc tendances, tissu confortable",
         price: 7500,
-        imageUrl: "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=600&q=80",
+        imageUrl: "https://i.pinimg.com/1200x/a7/37/2e/a7372ec7f92d500773666a4ed4085c65.jpg",
         sizes: JSON.stringify(["S", "M", "L"]),
         colors: JSON.stringify(["Beige", "Kaki", "Noir"]),
         featured: true,
         categoryId: vetements.id,
+        vendorId: vendor.id, // 👈 Ajouté ici
       },
     }),
     prisma.product.create({
       data: {
-        name: "Sac bandoulière chaîne dorée",
-        description: "Mini sac structuré, finitions premium",
+        name: "Pochette de soirée de luxe ornée de cristaux dorés",
+        description: "Sac à main de mariage en strass, finitions premium",
         price: 12000,
-        imageUrl: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=600&q=80",
+        imageUrl: "https://i.pinimg.com/1200x/54/d3/23/54d3234ca9486929a2ebbccd57503ef6.jpg",
         colors: JSON.stringify(["Noir", "Blanc", "Camel"]),
         featured: true,
         categoryId: accessoires.id,
+        vendorId: vendor.id, // 👈 Ajouté ici
       },
     }),
     prisma.product.create({
       data: {
         name: "Boucles d'oreilles perles",
-        description: "Bijoux délicats, finition dorée",
+        description: "Bijoux délicats, finition dorée,fleuris",
         price: 6000,
-        imageUrl: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=600&q=80",
+        imageUrl: "https://i.pinimg.com/736x/00/5e/3f/005e3fab4761b60dcd6517b66fae50cd.jpg",
         colors: JSON.stringify(["Or", "Argent"]),
         categoryId: accessoires.id,
+        vendorId: vendor.id, // 👈 Ajouté ici
       },
     }),
     prisma.product.create({
       data: {
         name: "Eau de parfum Vanille Gourmande",
-        description: "Notes vanille, caramel et musc blanc — 50ml",
+        description: "Un parfum à la vanille chaude, comestible… et totalement irrésistible",
         price: 3500,
-        imageUrl: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=600&q=80",
+        imageUrl: "https://i.pinimg.com/1200x/d1/c0/5e/d1c05eb5ec2e41353f4fad9feeeb5ca2.jpg",
         featured: true,
         categoryId: parfums.id,
+        vendorId: vendor.id, // 👈 Ajouté ici
       },
     }),
     prisma.product.create({
@@ -132,11 +137,12 @@ async function main() {
         name: "Sneakers plateforme blanches",
         description: "Semelle épaisse 4cm, confort toute la journée",
         price: 28000,
-        imageUrl: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=600&q=80",
+        imageUrl: "https://i.pinimg.com/736x/5d/7b/30/5d7b30bce3e40f26bdc0709ab1ae55cd.jpg",
         sizes: JSON.stringify(["36", "37", "38", "39", "40", "41"]),
         colors: JSON.stringify(["Blanc", "Noir/Rose"]),
         featured: true,
         categoryId: chaussures.id,
+        vendorId: vendor.id, // 👈 Ajouté ici
       },
     }),
     prisma.product.create({
@@ -144,21 +150,23 @@ async function main() {
         name: "Kit ongles press-on French",
         description: "24 capsules, colle incluse, finition salon",
         price: 10000,
-        imageUrl: "https://images.unsplash.com/photo-1604654896290-d063af5b9ebd?w=600&q=80",
+        imageUrl: "https://i.pinimg.com/1200x/29/1f/15/291f15a77beebc38613d473f0fcf6b8f.jpg",
         colors: JSON.stringify(["French", "Nude", "Bordeaux"]),
         featured: true,
         categoryId: ongles.id,
+        vendorId: vendor.id, // 👈 Ajouté ici
       },
     }),
     prisma.product.create({
       data: {
-        name: "Mules talons carrés",
-        description: "Talons 7cm, style minimal chic",
+        name: "Sandales à talons hauts élégantes pour femmes",
+        description: "style de talon confortable pour les fêtes",
         price: 11000,
-        imageUrl: "https://images.unsplash.com/photo-1560769629-975ec94e6a86?w=600&q=80",
+        imageUrl: "https://i.pinimg.com/1200x/81/f2/9f/81f29f1a713e07b59092cbcaaa1576e4.jpg",
         sizes: JSON.stringify(["36", "37", "38", "39", "40"]),
         colors: JSON.stringify(["Noir", "Nude", "Rouge"]),
         categoryId: chaussures.id,
+        vendorId: vendor.id, // 👈 Ajouté ici
       },
     }),
   ]);
@@ -189,7 +197,7 @@ async function main() {
       data: {
         title: "Pack Beauté & Parfums 💄",
         description: "Parfums + ongles press-on à prix groupé",
-        coverImage: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=800&q=80",
+        coverImage: "https://i.pinimg.com/736x/7d/f8/49/7df849b6b49fa6d08baf8293be84b15b.jpg",
         minMembers: 8,
         maxMembers: 40,
         discount: 20,
@@ -201,7 +209,7 @@ async function main() {
       data: {
         title: "Sneakers & Accessoires 🔥",
         description: "Dernières tendances chaussures + sacs",
-        coverImage: "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=800&q=80",
+        coverImage: "https://i.pinimg.com/736x/90/34/14/9034145b50130541ce917b936ffd0420.jpg",
         minMembers: 6,
         maxMembers: 25,
         discount: 12,

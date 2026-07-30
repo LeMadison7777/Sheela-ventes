@@ -7,16 +7,27 @@ import { formatDate, daysLeft, formatPrice } from "@/lib/utils";
 import { GROUP_STATUS } from "@/lib/constants";
 import JoinGroupForm from "@/components/groups/JoinGroupForm";
 import ShareGroupButton from "@/components/groups/ShareGroupButton";
+import GroupHeaderActions from "@/app/groupes/GroupHeaderActions";
+import AddProductButton from "../AddProductButton";
+
+// Importe ta fonction de session selon ton auth (ex: NextAuth auth() ou getServerSession)
+// import { auth } from "@/auth"; 
+
 
 type Params = { params: Promise<{ id: string }> };
 
 export default async function GroupDetailPage({ params }: Params) {
   const { id } = await params;
 
+  // Récupération de la session utilisateur (adapte selon ton système d'authentification)
+  // const session = await auth();
+  // const currentUserId = session?.user?.id;
+  const currentUserId = ""; // À remplacer par l'ID de l'utilisateur connecté de ton app
+
   const group = await prisma.saleGroup.findUnique({
     where: { id },
     include: {
-      vendor: { select: { name: true, phone: true, avatar: true } },
+      vendor: { select: { id: true, name: true, phone: true, avatar: true } },
       orders: {
         include: { product: { include: { category: true } } },
         orderBy: { createdAt: "desc" },
@@ -27,17 +38,19 @@ export default async function GroupDetailPage({ params }: Params) {
 
   if (!group) notFound();
 
+  // Vérifie si l'utilisateur connecté est le propriétaire du groupe
+  const isOwner = currentUserId ? currentUserId === group.vendorId : false;
+
   const currentCount = group._count.orders;
   const progress = Math.min(100, (currentCount / group.maxMembers) * 100);
   const statusInfo = GROUP_STATUS[group.status as keyof typeof GROUP_STATUS] ?? GROUP_STATUS.open;
 
   const products = await prisma.product.findMany({
+    where: { vendorId: group.vendorId },
     include: { category: true },
-    orderBy: { featured: "desc" },
-    take: 20,
+    orderBy: { createdAt: "desc" },
   });
 
-  // Sécurité pour l'image de couverture (gère le cas où group.coverImage est vide ou null)
   const coverSrc = group.coverImage && group.coverImage.trim() !== ""
     ? group.coverImage
     : "https://images.unsplash.com/photo-1483985988355-763728e9fb55?w=1200&q=80";
@@ -56,6 +69,12 @@ export default async function GroupDetailPage({ params }: Params) {
               priority
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[#0a0118] via-[#0a0118]/40 to-transparent" />
+            
+            {/* Bouton de modification positionné en haut à droite de la couverture si propriétaire */}
+            <div className="absolute top-6 right-6 z-10">
+              <GroupHeaderActions group={group} isOwner={isOwner} />
+            </div>
+
             <div className="absolute bottom-6 left-6 right-6">
               <div className="flex gap-2 mb-3">
                 <Badge variant="pink">-{group.discount}% groupé</Badge>
@@ -107,7 +126,6 @@ export default async function GroupDetailPage({ params }: Params) {
                 </p>
               </div>
 
-              {/* Bouton de partage WhatsApp intégré ici */}
               <div className="mt-6">
                 <ShareGroupButton groupTitle={group.title} />
               </div>

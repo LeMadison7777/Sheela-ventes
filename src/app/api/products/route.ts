@@ -42,6 +42,7 @@ export async function POST(request: NextRequest) {
         stock: body.stock ?? 100,
         featured: body.featured ?? false,
         categoryId: body.categoryId,
+        vendorId: body.vendorId,
       },
       include: { category: true },
     });

@@ -29,13 +29,43 @@ export async function GET(_request: Request, { params }: Params) {
 }
 
 export async function PATCH(request: Request, { params }: Params) {
-  const { id } = await params;
-  const body = await request.json();
+  try {
+    const { id } = await params;
+    const body = await request.json();
 
-  const group = await prisma.saleGroup.update({
-    where: { id },
-    data: body,
-  });
+    const group = await prisma.saleGroup.update({
+      where: { id },
+      data: {
+        title: body.title,
+        description: body.description,
+        coverImage: body.coverImage,
+        minMembers: body.minMembers ? Number(body.minMembers) : undefined,
+        maxMembers: body.maxMembers ? Number(body.maxMembers) : undefined,
+        discount: body.discount ? Number(body.discount) : undefined,
+        deadline: body.deadline ? new Date(body.deadline) : undefined,
+        status: body.status,
+      },
+    });
 
-  return NextResponse.json(group);
+    return NextResponse.json(group);
+  } catch (error) {
+    console.error("Erreur modification groupe:", error);
+    return NextResponse.json({ error: "Impossible de modifier le groupe" }, { status: 400 });
+  }
+}
+export async function DELETE(request: Request, { params }: Params) {
+  try {
+    const { id } = await params;
+
+    // Supprime le groupe (Assure-toi d'avoir configuré onDelete: Cascade dans ton schema.prisma 
+    // pour les ordres liés, ou supprime-les d'abord si nécessaire)
+    await prisma.saleGroup.delete({
+      where: { id },
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("Erreur suppression groupe:", error);
+    return NextResponse.json({ error: "Impossible de supprimer le groupe" }, { status: 400 });
+  }
 }

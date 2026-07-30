@@ -43,15 +43,29 @@ export default function DashboardPage() {
 
   useEffect(() => {
     fetch("/api/dashboard")
-      .then((r) => {
+      .then(async (r) => {
         if (r.status === 401) {
           router.push("/connexion");
           return null;
         }
-        return r.json();
+        
+        // Sécurité : lit d'abord le texte brut pour éviter le crash JSON
+        const text = await r.text();
+        if (!text) return null;
+        
+        try {
+          return JSON.parse(text);
+        } catch (e) {
+          console.error("Erreur parsing JSON dashboard:", e);
+          return null;
+        }
       })
       .then((d) => {
         if (d) setData(d);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Erreur fetch dashboard:", err);
         setLoading(false);
       });
   }, [router]);
@@ -64,13 +78,25 @@ export default function DashboardPage() {
     );
   }
 
-  if (!data) return null;
+  if (!data) {
+    return (
+      <div className="min-h-screen pt-28 flex flex-col items-center justify-center text-center px-4">
+        <p className="text-zinc-400 mb-4">Impossible de charger les données du tableau de bord.</p>
+        <button
+          onClick={() => window.location.reload()}
+          className="px-4 py-2 bg-pink-500 text-white rounded-xl text-sm"
+        >
+          Réessayer
+        </button>
+      </div>
+    );
+  }
 
   const statCards = [
-    { icon: ShoppingBag, label: "Mes groupes", value: data.stats.groups, color: "text-pink-400" },
-    { icon: Users, label: "Commandes reçues", value: data.stats.orders, color: "text-violet-400" },
-    { icon: Package, label: "Articles catalogue", value: data.stats.products, color: "text-amber-400" },
-    { icon: TrendingUp, label: "Catégories", value: data.stats.categories, color: "text-emerald-400" },
+    { icon: ShoppingBag, label: "Mes groupes", value: data.stats?.groups ?? 0, color: "text-pink-400" },
+    { icon: Users, label: "Commandes reçues", value: data.stats?.orders ?? 0, color: "text-violet-400" },
+    { icon: Package, label: "Articles catalogue", value: data.stats?.products ?? 0, color: "text-amber-400" },
+    { icon: TrendingUp, label: "Catégories", value: data.stats?.categories ?? 0, color: "text-emerald-400" },
   ];
 
   return (
@@ -144,7 +170,7 @@ export default function DashboardPage() {
                   Voir tout <ArrowRight className="h-3 w-3" />
                 </Link>
               </div>
-              {data.recentGroups.length === 0 ? (
+              {!data.recentGroups || data.recentGroups.length === 0 ? (
                 <p className="text-sm text-zinc-500 py-6 text-center">Aucun groupe créé</p>
               ) : (
                 <div className="space-y-3">
@@ -174,7 +200,7 @@ export default function DashboardPage() {
           <FadeIn delay={0.3}>
             <GlassCard className="p-6" hover={false}>
               <h2 className="font-semibold text-white mb-5">Dernières commandes</h2>
-              {data.recentOrders.length === 0 ? (
+              {!data.recentOrders || data.recentOrders.length === 0 ? (
                 <p className="text-sm text-zinc-500 py-6 text-center">Aucune commande</p>
               ) : (
                 <div className="space-y-3">
@@ -186,7 +212,7 @@ export default function DashboardPage() {
                       <div>
                         <p className="text-sm font-medium text-white">{order.buyerName}</p>
                         <p className="text-xs text-zinc-500 mt-0.5">
-                          {order.product.name} · {order.group.title}
+                          {order.product?.name} · {order.group?.title}
                         </p>
                       </div>
                       <Badge variant={order.status === "confirmed" ? "success" : "default"}>
